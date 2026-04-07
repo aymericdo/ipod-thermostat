@@ -22,6 +22,7 @@ body {
 
 .page {
   width: 320px;
+  height: 426px;
   margin-top: 16px;
   text-align: center;
   -webkit-box-flex: 0;
