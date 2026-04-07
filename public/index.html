@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>Thermostat</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="container">
+  <div class="page">
+    <div class="room">Salon</div>
+    <div class="temp-display">
+      <span class="current" id="salon-actuelle">-- </span>°C
+      <div class="target">Cible: <span id="salon-cible">--</span>°C</div>
+    </div>
+    <div class="buttons">
+      <button onclick="changeTemp('salon', -0.5)">➖</button>
+      <button onclick="changeTemp('salon', 0.5)">➕</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <div class="room">Véranda</div>
+    <div class="temp-display">
+      <span class="current" id="veranda-actuelle">-- </span>°C
+      <div class="target">Cible: <span id="veranda-cible">--</span>°C</div>
+    </div>
+    <div class="buttons">
+      <button onclick="changeTemp('veranda', -0.5)">➖</button>
+      <button onclick="changeTemp('veranda', 0.5)">➕</button>
+    </div>
+  </div>
+</div>
+
+<div id="dots">
+  <span class="dot active"></span>
+  <span class="dot"></span>
+  <span class="dot"></span>
+</div>
+
+<script>
+  function updateDots() {
+    var dots = document.getElementsByClassName("dot");
+
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].className = "dot";
+    }
+
+    dots[current].className = "dot active";
+  }
+
+  var container = document.getElementById("container");
+
+  var current = 0;
+  var startX = 0;
+  var currentX = 0;
+  var isMoving = false;
+
+  var pageWidth = 320; // largeur fixe iPod
+
+  // START
+  container.addEventListener("touchstart", function(e) {
+    startX = e.touches[0].clientX;
+    isMoving = true;
+  }, false);
+
+  // MOVE (important)
+  container.addEventListener("touchmove", function(e) {
+    if (!isMoving) return;
+
+    currentX = e.touches[0].clientX;
+    var diff = currentX - startX;
+
+    container.style.webkitTransition = "none";
+    container.style.webkitTransform =
+      "translateX(" + (-current * pageWidth + diff) + "px)";
+  }, false);
+
+  // END
+  container.addEventListener("touchend", function(e) {
+    isMoving = false;
+
+    var diff = currentX - startX;
+
+    if (diff < -50 && current < 2) current++;
+    if (diff > 50 && current > 0) current--;
+
+    container.style.webkitTransition = "-webkit-transform 0.3s ease-out";
+    container.style.webkitTransform =
+      "translateX(-" + (current * pageWidth) + "px)";
+
+    updateDots();
+  }, false);
+
+  document.addEventListener("touchmove", function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  function updateDisplay() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/temps", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            var data = JSON.parse(xhr.responseText);
+            
+            // Mise à jour Salon
+            document.getElementById('salon-actuelle').innerHTML = data.salon.actuelle;
+            document.getElementById('salon-cible').innerHTML = data.salon.cible;
+            
+            // Mise à jour Véranda
+            document.getElementById('veranda-actuelle').innerHTML = data.veranda.actuelle;
+            document.getElementById('veranda-cible').innerHTML = data.veranda.cible;
+        }
+    };
+    xhr.send();
+  }
+
+  function changeTemp(room, delta) {
+    var cibleElement = document.getElementById(room + "-cible");
+    var currentCible = parseFloat(cibleElement.innerHTML);
+    var newTemp = currentCible + delta;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/set?room=" + room + "&value=" + newTemp, true);
+    
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // On attend un peu que HA traite l'info avant de rafraîchir
+            setTimeout(updateDisplay, 1000);
+        }
+    };
+    xhr.send();
+  }
+
+  setInterval(updateDisplay, 30000);
+  updateDisplay();
+</script>
+
+</body>
+</html>
