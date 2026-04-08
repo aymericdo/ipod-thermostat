@@ -10,7 +10,7 @@ app.use(express.static('public'));
 // const HA_TOKEN = process.env.HA_TOKEN;
 
 const HA_TOKEN = process.env.SUPERVISOR_TOKEN;
-const HA_URL = "http://supervisor/core/api";
+const HA_URL = "http://supervisor/core";
 const PORT = 8080
 
 const haApi = axios.create({
