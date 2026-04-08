@@ -13,6 +13,8 @@ const HA_TOKEN = process.env.SUPERVISOR_TOKEN;
 const HA_URL = "http://supervisor/core";
 const PORT = 8080
 
+console.log("Token présent (longueur) :", HA_TOKEN?.length);
+
 const haApi = axios.create({
   baseURL: `${HA_URL}/api`,
   headers: {
