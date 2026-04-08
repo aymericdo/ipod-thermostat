@@ -48,6 +48,13 @@ app.get('/api/temps', async (req, res) => {
 
     res.json(data);
   } catch (error) {
+    console.error("Détail de l'erreur HA :");
+    if (error.response) {
+      console.error("Status:", error.response.status);
+      console.error("Data:", error.response.data);
+    } else {
+      console.error("Message:", error.message);
+    }
     res.status(500).send("Erreur de lecture HA");
   }
 });
