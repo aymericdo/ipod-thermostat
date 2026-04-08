@@ -1,20 +1,31 @@
 const axios = require('axios');
 const express = require('express');
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 const app = express();
+const fs = require('fs');
 
 app.use(express.static('public'));
 
 // Configuration HA
-// const HA_URL = 'https://homeassistant.aymericdo.ovh'; // http://homeassistant.local:8123 soon
+// const HA_URL = 'https://homeassistant.aymericdo.ovh';
 // const HA_TOKEN = process.env.HA_TOKEN;
 
-const HA_TOKEN = process.env.SUPERVISOR_TOKEN;
-const HA_URL = "http://supervisor/core";
+const HA_URL = "http://homeassistant.local:8123";
 const PORT = 8080
 
+let HA_TOKEN = process.env.HA_TOKEN;
+
+if (!HA_TOKEN) {
+  try {
+    const options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
+    HA_TOKEN = options.ha_token;
+  } catch (err) {
+    console.error("Impossible de lire le fichier options.json", err);
+  }
+}
+
 const haApi = axios.create({
-  baseURL: `${HA_URL}`,
+  baseURL: `${HA_URL}/api`,
   headers: {
     'Authorization': `Bearer ${HA_TOKEN}`,
     'Content-Type': 'application/json'
