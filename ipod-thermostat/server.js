@@ -6,8 +6,8 @@ const app = express();
 app.use(express.static('public'));
 
 // Configuration HA
-const HA_URL = 'https://homeassistant.aymericdo.ovh'; // http://homeassistant.local:8123 soon
-const HA_TOKEN = process.env.HA_TOKEN;
+const HA_TOKEN = process.env.SUPERVISOR_TOKEN;
+const HA_URL = "http://supervisor/core/api";
 const PORT = 8080
 
 const haApi = axios.create({
