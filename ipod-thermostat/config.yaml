@@ -7,7 +7,7 @@ arch:
   - armv7
 init: false
 hassio_api: true
-hassio_role: manager
+hassio_role: admin
 ingress: true
 ingress_port: 8080 
 panel_icon: "mdi:ipod"
