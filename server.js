@@ -8,6 +8,7 @@ app.use(express.static('public'));
 // Configuration HA
 const HA_URL = 'https://homeassistant.aymericdo.ovh'; // http://homeassistant.local:8123 soon
 const HA_TOKEN = process.env.HA_TOKEN;
+const PORT = 8080
 
 const haApi = axios.create({
   baseURL: `${HA_URL}/api`,
@@ -78,6 +79,6 @@ app.get('/api/set', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
 });

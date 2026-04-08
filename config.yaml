@@ -1,0 +1,13 @@
+name: "iPod Thermostat"
+version: "1.0.0"
+slug: "ipod_thermostat"
+description: "Interface Node.js pour thermostat"
+arch:
+  - aarch64
+  - armv7
+init: false
+hassio_api: true
+ingress: true
+ingress_port: 8080 # Le port sur lequel ton script Node écoute
+panel_icon: "mdi:ipod" # Optionnel : ajoute une icône dans la barre latérale HA
+panel_title: "iPod"
