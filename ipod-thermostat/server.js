@@ -14,7 +14,7 @@ const HA_URL = "http://supervisor/core";
 const PORT = 8080
 
 const haApi = axios.create({
-  baseURL: `${HA_URL}/api`,
+  baseURL: `${HA_URL}`,
   headers: {
     'Authorization': `Bearer ${HA_TOKEN}`,
     'Content-Type': 'application/json'
