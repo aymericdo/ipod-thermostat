@@ -13,7 +13,9 @@ panel_icon: "mdi:ipod"
 panel_title: "iPod"
 options:
   ha_token: "" # On le laisse vide par défaut
+  ha_url: "http://homeassistant.local:8123" # URL par défaut de Home Assistant
 schema:
   ha_token: str # On dit que c'est une chaîne de caractères
+  ha_url: str # On dit que c'est une chaîne de caractères
 ports:
   8080/tcp: 8080 

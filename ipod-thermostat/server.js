@@ -4,21 +4,18 @@ require('dotenv').config({ quiet: true });
 const app = express();
 const fs = require('fs');
 
-app.use(express.static('public'));
-
-// Configuration HA
-// const HA_URL = 'https://homeassistant.aymericdo.ovh';
-// const HA_TOKEN = process.env.HA_TOKEN;
-
-const HA_URL = "http://homeassistant.local:8123";
 const PORT = 8080
 
+app.use(express.static('public'));
+
+let HA_URL = process.env.HA_URL;
 let HA_TOKEN = process.env.HA_TOKEN;
 
 if (!HA_TOKEN) {
   try {
     const options = JSON.parse(fs.readFileSync('/data/options.json', 'utf8'));
     HA_TOKEN = options.ha_token;
+    HA_URL = options.ha_url;
   } catch (err) {
     console.error("Impossible de lire le fichier options.json", err);
   }
