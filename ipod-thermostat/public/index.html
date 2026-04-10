@@ -13,29 +13,7 @@
 <body>
 
 <div id="container">
-  <div class="page">
-    <div class="room">Salon</div>
-    <div class="temp-display">
-      <span class="current" id="salon-actuelle">-- </span>°C
-      <div class="target">Cible: <span id="salon-cible">--</span>°C</div>
-    </div>
-    <div class="buttons">
-      <button onclick="changeTemp('salon', -0.5)">➖</button>
-      <button onclick="changeTemp('salon', 0.5)">➕</button>
-    </div>
-  </div>
-
-  <div class="page">
-    <div class="room">Véranda</div>
-    <div class="temp-display">
-      <span class="current" id="veranda-actuelle">-- </span>°C
-      <div class="target">Cible: <span id="veranda-cible">--</span>°C</div>
-    </div>
-    <div class="buttons">
-      <button onclick="changeTemp('veranda', -0.5)">➖</button>
-      <button onclick="changeTemp('veranda', 0.5)">➕</button>
-    </div>
-  </div>
+  <div id="container"></div>
 </div>
 
 <div id="dots">
@@ -45,6 +23,50 @@
 </div>
 
 <script>
+  var rooms = [
+    { id: "salon", name: "Salon" },
+    { id: "veranda", name: "Véranda" }
+  ];
+
+  function renderPages() {
+    var container = document.getElementById("container");
+    var html = "";
+
+    for (var i = 0; i < rooms.length; i++) {
+      var room = rooms[i];
+
+      html += '<div class="page">';
+        html += '<div class="room">' + room.name + '</div>';
+        html += '<div class="temp-display">';
+          html += '<span class="current" id="' + room.id + '-current">--</span>°C';
+          html += '<div class="target"><span id="' + room.id + '-mode">--</span></div>';
+        html += '</div>';
+
+      // nouveaux boutons
+        html += '<div class="buttons-grid">';
+
+          // ligne du haut
+          html += '<div class="buttons-row">';
+          html += '<button onclick="setMode(\'' + room.id + '\', \'horsgel\')">❄️</button>';
+          html += '<button onclick="setMode(\'' + room.id + '\', \'confort\')">☀️</button>';
+          html += '</div>';
+
+          // ligne du bas
+          html += '<div class="buttons-row">';
+          html += '<button onclick="setMode(\'' + room.id + '\', \'off\')">🔴</button>';
+          html += '<button onclick="setMode(\'' + room.id + '\', \'eco\')">🌙</button>';
+          html += '</div>';
+
+        html += '</div>';
+
+      html += '</div>';
+    }
+
+    container.innerHTML = html;
+  }
+
+  renderPages();
+
   function updateDots() {
     var dots = document.getElementsByClassName("dot");
 
@@ -110,31 +132,30 @@
             var data = JSON.parse(xhr.responseText);
             
             // Mise à jour Salon
-            document.getElementById('salon-actuelle').innerHTML = data.salon.actuelle;
-            document.getElementById('salon-cible').innerHTML = data.salon.cible;
+            document.getElementById('salon-current').innerHTML = data.salon.current;
+            document.getElementById('salon-mode').innerHTML = data.salon.currentMode;
             
             // Mise à jour Véranda
-            document.getElementById('veranda-actuelle').innerHTML = data.veranda.actuelle;
-            document.getElementById('veranda-cible').innerHTML = data.veranda.cible;
+            document.getElementById('veranda-current').innerHTML = data.veranda.current;
+            document.getElementById('veranda-mode').innerHTML = data.veranda.currentMode;
         }
     };
     xhr.send();
   }
 
-  function changeTemp(room, delta) {
-    var cibleElement = document.getElementById(room + "-cible");
-    var currentCible = parseFloat(cibleElement.innerHTML);
-    var newTemp = currentCible + delta;
+
+  function setMode(room, mode) {
+    var value;
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/set?room=" + room + "&value=" + newTemp, true);
-    
+    xhr.open("GET", "/api/set_mode?room=" + room + "&value=" + mode, true);
+
     xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            // On attend un peu que HA traite l'info avant de rafraîchir
-            setTimeout(updateDisplay, 1000);
-        }
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        setTimeout(updateDisplay, 1000);
+      }
     };
+
     xhr.send();
   }
 

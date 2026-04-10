@@ -44,14 +44,21 @@ body {
   margin-bottom: 10px;
 }
 
-.buttons {
-  margin-top: 40px;
+.buttons-grid {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
-button {
+.buttons-row {
+  display: -webkit-box;
+  -webkit-box-pack: center;
+}
+
+.buttons-row button {
   font-size: 30px;
   margin: 10px;
   padding: 10px 20px;
+  width: 100px;
 }
 
 #dots {

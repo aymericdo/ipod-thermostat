@@ -33,9 +33,9 @@ app.get('/api/temps', async (req, res) => {
   try {
     const sensors = [
       'sensor.0xb48931fffe3bf627_temperature', // Salon actuel
-      'sensor.0xb48931fffe3bf627_temperature', // 'climate.thermostat_salon',              // Salon cible
+      'input_select.chauffage_salon',
       'sensor.0xb48931fffe3bf1a9_temperature', // Véranda actuel
-      'sensor.0xb48931fffe3bf1a9_temperature', // 'climate.thermostat_veranda'             // Véranda cible
+      'input_select.chauffage_veranda'
     ];
 
     // On récupère tout d'un coup
@@ -45,12 +45,12 @@ app.get('/api/temps', async (req, res) => {
     // On structure les données proprement
     const data = {
       salon: {
-        actuelle: parseFloat(results[0].data.state),
-        cible: results[1].data.attributes.temperature,
+        current: parseFloat(results[0].data.state),
+        currentMode: results[1].data.state,
       },
       veranda: {
-        actuelle: parseFloat(results[2].data.state),
-        cible: results[3].data.attributes.temperature,
+        current: parseFloat(results[2].data.state),
+        currentMode: results[3].data.state,
       }
     };
 
@@ -68,7 +68,7 @@ app.get('/api/temps', async (req, res) => {
 });
 
 // SET température
-app.get('/api/set', async (req, res) => {
+app.get('/api/set_temp', async (req, res) => {
   const room = req.query.room;
   const value = parseFloat(req.query.value);
 
@@ -88,6 +88,36 @@ app.get('/api/set', async (req, res) => {
         temperature: value
       });
       res.send(`Température de ${room} mise à jour à ${value}°C`);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Erreur lors de la communication avec HA");
+    }
+  } else {
+    res.status(404).send("Pièce non trouvée");
+  }
+});
+
+// SET mode
+app.get('/api/set_mode', async (req, res) => {
+  const room = req.query.room;
+  const value = req.query.value;
+
+  // Mapping de tes pièces vers les entités HA
+  const entityMapping = {
+    salon: 'input_select.chauffage_salon',
+    veranda: 'input_select.chauffage_veranda'
+  };
+
+  const entityId = entityMapping[room];
+
+  if (entityId) {
+    try {
+      // On appelle le service 'set_temperature' du domaine 'climate'
+      await haApi.post('/services/input_select/select_option', {
+        entity_id: entityId,
+        option: value
+      });
+      res.send(`Mode de ${room} mis à jour à ${value}`);
     } catch (error) {
       console.error(error);
       res.status(500).send("Erreur lors de la communication avec HA");
