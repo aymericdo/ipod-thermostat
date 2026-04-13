@@ -16,11 +16,7 @@
   <div id="container"></div>
 </div>
 
-<div id="dots">
-  <span class="dot active"></span>
-  <span class="dot"></span>
-  <span class="dot"></span>
-</div>
+<div id="dots"></div>
 
 <script>
   var rooms = [
@@ -28,18 +24,32 @@
     { id: "veranda", name: "Véranda" }
   ];
 
+  const modes = {
+    off: "Off",
+    confort: "Confort",
+    eco: "Éco",
+    horsgel: "Hors-gel"
+  };
+
   function renderPages() {
     var container = document.getElementById("container");
+    var dots = document.getElementById("dots");
     var html = "";
+    var htmlDots = "";
 
     for (var i = 0; i < rooms.length; i++) {
       var room = rooms[i];
 
+      // Dots
+      htmlDots += '<span class="dot' + (i === 0 ? " active" : "") + '"></span>';
+
+      // Pages
       html += '<div class="page">';
         html += '<div class="room">' + room.name + '</div>';
         html += '<div class="temp-display">';
           html += '<span class="current" id="' + room.id + '-current">--</span>°C';
-          html += '<div class="target"><span id="' + room.id + '-mode">--</span></div>';
+          html += '<div class="target"><span class="chevron">»</span> <span id="' + room.id + '-target">--</span>°C';
+          html += ' - <span id="' + room.id + '-mode">--</span></div>';
         html += '</div>';
 
       // nouveaux boutons
@@ -53,7 +63,7 @@
 
           // ligne du bas
           html += '<div class="buttons-row">';
-          html += '<button onclick="setMode(\'' + room.id + '\', \'off\')">🔴</button>';
+          html += '<button onclick="setMode(\'' + room.id + '\', \'off\')"><img src="/power_white.png" alt="Off" class="icon-img"></button>';
           html += '<button onclick="setMode(\'' + room.id + '\', \'eco\')">🌙</button>';
           html += '</div>';
 
@@ -63,6 +73,7 @@
     }
 
     container.innerHTML = html;
+    dots.innerHTML = htmlDots;
   }
 
   renderPages();
@@ -133,19 +144,50 @@
             
             // Mise à jour Salon
             document.getElementById('salon-current').innerHTML = data.salon.current;
-            document.getElementById('salon-mode').innerHTML = data.salon.currentMode;
+            document.getElementById('salon-target').innerHTML = data.salon.current; // Affiche la température actuelle dans la section "target" temporairement
+            document.getElementById('salon-mode').innerHTML = modes[data.salon.currentMode];
             
             // Mise à jour Véranda
             document.getElementById('veranda-current').innerHTML = data.veranda.current;
-            document.getElementById('veranda-mode').innerHTML = data.veranda.currentMode;
+            document.getElementById('veranda-target').innerHTML = data.veranda.current; // Affiche la température actuelle dans la section "target" temporairement
+            document.getElementById('veranda-mode').innerHTML = modes[data.veranda.currentMode];
+
+            setLoadingMode(false);
         }
     };
     xhr.send();
   }
 
+  function setLoadingMode(loadingState) {
+    // console.log("Setting loading mode to", loadingState); // Debug
+    
+    // On récupère tous les boutons de la page
+    var buttons = document.getElementsByTagName("button");
+    
+    // Boucle for classique (la plus rapide et compatible)
+    for (var i = 0; i < buttons.length; i++) {
+        var btn = buttons[i];
+
+        // On vérifie si le bouton est bien à l'intérieur d'une .buttons-row
+        // car getElementsByTagName les prend tous.
+        if (btn.parentNode && btn.parentNode.className.indexOf("buttons-row") !== -1) {
+            btn.disabled = loadingState;
+            
+            // Sur vieux iOS, changer le style manuellement aide à rafraîchir le rendu
+            if (loadingState) {
+                btn.style.opacity = "0.5";
+            } else {
+                btn.style.opacity = "1.0";
+            }
+        }
+    }
+}
+
 
   function setMode(room, mode) {
     var value;
+
+    setLoadingMode(true);
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/api/set_mode?room=" + room + "&value=" + mode, true);

@@ -4,6 +4,7 @@ body {
   font-family: Arial;
   background: #111;
   color: white;
+  font-family: 'Inter', sans-serif;
 }
 
 * {
@@ -29,8 +30,12 @@ body {
 }
 
 .room {
-  font-size: 28px;
-  margin-top: 40px;
+  font-size: 16px;
+  margin-top: 16px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #EAEFEF;
 }
 
 .current {
@@ -39,9 +44,14 @@ body {
 }
 
 .target {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 16px;
+  color: #EAEFEF;
   margin-bottom: 10px;
+}
+
+.target .chevron {
+  font-size: 24px;
+  font-family: Gill Sans, sans-serif;
 }
 
 .buttons-grid {
@@ -52,13 +62,32 @@ body {
 .buttons-row {
   display: -webkit-box;
   -webkit-box-pack: center;
+  height: 68px;
 }
 
 .buttons-row button {
-  font-size: 30px;
-  margin: 10px;
+  margin: 4px;
   padding: 10px 20px;
   width: 100px;
+  background: transparent;
+  border: 2px solid #555;
+  border-radius: 16px;
+  color: white;
+  font-size: 24px;
+  height: 60px;
+  cursor: pointer;
+}
+
+.buttons-row button:disabled {
+  background: grey;
+  opacity: 0.5;
+}
+
+.buttons-row button .icon-img {
+  margin: 0 auto;
+  max-height: 22px;
+  width: auto;
+  opacity: 0.9;
 }
 
 #dots {
