@@ -122,7 +122,7 @@
     currentX = e.changedTouches[0].clientX;
     var diff = currentX - startX;
 
-    if (diff < -50 && current < 2) current++;
+    if (diff < -50 && current < rooms.length - 1) current++;
     if (diff > 50 && current > 0) current--;
 
     container.style.webkitTransition = "-webkit-transform 0.3s ease-out";
