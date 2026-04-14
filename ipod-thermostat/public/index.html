@@ -119,6 +119,7 @@
   container.addEventListener("touchend", function(e) {
     isMoving = false;
 
+    currentX = e.changedTouches[0].clientX;
     var diff = currentX - startX;
 
     if (diff < -50 && current < 2) current++;
