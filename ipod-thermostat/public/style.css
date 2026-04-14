@@ -90,6 +90,11 @@ body {
   opacity: 0.9;
 }
 
+.buttons-row button.-activated {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+}
+
 #dots {
   position: fixed;
   bottom: 20px;
