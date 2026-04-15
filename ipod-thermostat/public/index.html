@@ -138,10 +138,7 @@
 
   function updateDisplay() {
     var xhr = new XMLHttpRequest();
-    var basePath = window.location.pathname.includes('/app/') ? 
-      window.location.pathname.split('/app/')[0] + '/api/ipod_thermostat' : 
-      '';
-    xhr.open("GET", basePath + "/api/temps", true);
+    xhr.open("GET", "./api/temps", true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4 && xhr.status === 200) {
             var data = JSON.parse(xhr.responseText);
@@ -207,10 +204,7 @@
     setLoadingMode(true);
 
     var xhr = new XMLHttpRequest();
-    var basePath = window.location.pathname.includes('/app/') ? 
-      window.location.pathname.split('/app/')[0] + '/api/ipod_thermostat' : 
-      '';
-    xhr.open("GET", basePath + "/api/set_mode?room=" + room + "&value=" + mode, true);
+    xhr.open("GET", "./api/set_mode?room=" + room + "&value=" + mode, true);
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4 && xhr.status === 200) {
