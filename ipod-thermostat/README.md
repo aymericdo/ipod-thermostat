@@ -13,7 +13,7 @@ Le serveur Express expose des API simples qui appellent Home Assistant via son A
 
 ## Demo
 
-![Demo](../demo.gif)
+![Demo](./demo.gif)
 
 ## Installation
 
