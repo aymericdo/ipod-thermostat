@@ -1,5 +1,5 @@
 name: "iPod Thermostat"
-version: "1.1.13" # Change la version pour forcer HA à voir la modif
+version: "1.1.14" # Change la version pour forcer HA à voir la modif
 slug: "ipod_thermostat"
 description: "Interface Node.js pour thermostat"
 arch:
@@ -8,7 +8,8 @@ arch:
 init: false
 hassio_api: true
 ingress: true
-ingress_port: 8080 
+ingress_port: 8080
+api: true
 panel_icon: "mdi:ipod"
 panel_title: "iPod"
 options:
