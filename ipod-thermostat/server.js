@@ -34,8 +34,8 @@ app.get('/api/temps', async (req, res) => {
     const sensors = [
       'sensor.0xb48931fffe3bf627_temperature', // Salon actuel
       'input_select.chauffage_salon',
-      'sensor.0xb48931fffe3bf1a9_temperature', // Véranda actuel
-      'input_select.chauffage_veranda'
+      'climate.thermostat_veranda',
+      'input_select.chauffage_veranda',
     ];
 
     // On récupère tout d'un coup
@@ -46,10 +46,12 @@ app.get('/api/temps', async (req, res) => {
     const data = {
       salon: {
         current: parseFloat(results[0].data.state),
+        currentTarget: 7,
         currentMode: results[1].data.state,
       },
       veranda: {
-        current: parseFloat(results[2].data.state),
+        current: parseFloat(results[2].data.attributes.current_temperature),
+        currentTarget: parseFloat(results[2].data.attributes.temperature),
         currentMode: results[3].data.state,
       }
     };

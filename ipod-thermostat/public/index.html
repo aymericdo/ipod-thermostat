@@ -145,11 +145,11 @@
             
             // Mise à jour Salon
             document.getElementById('salon-current').innerHTML = data.salon.current;
-            document.getElementById('salon-target').innerHTML = '19'; // Affiche la température actuelle dans la section "target" temporairement
+            document.getElementById('salon-target').innerHTML = data.salon.currentTarget;
             
             // Mise à jour Véranda
             document.getElementById('veranda-current').innerHTML = data.veranda.current;
-            document.getElementById('veranda-target').innerHTML = '19'; // Affiche la température actuelle dans la section "target" temporairement
+            document.getElementById('veranda-target').innerHTML = data.veranda.currentTarget;
 
             updateActivatedButtons('salon', data.salon.currentMode);
             updateActivatedButtons('veranda', data.veranda.currentMode);
@@ -215,7 +215,7 @@
     xhr.send();
   }
 
-  setInterval(updateDisplay, 30000);
+  setInterval(updateDisplay, 10000);
   updateDisplay();
 </script>
 
